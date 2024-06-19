@@ -7,6 +7,7 @@ public class KYH : MonoBehaviour
 {
     public List<Vector3> vertices = new List<Vector3>();
     public Material polygonMaterial;
+    public Texture2D polygonTexture;
     private Mesh mesh;
 
     void OnDrawGizmos()
@@ -26,23 +27,41 @@ public class KYH : MonoBehaviour
         {
             Vector3[] verts = vertices.ToArray();
             int[] tris = new int[] { 0, 1, 2 };
+            Vector2[] uvs = new Vector2[]
+            {
+                new Vector2(0, 1),
+                new Vector2(1, 1),
+                new Vector2(0, 0)
+            };
 
             mesh.vertices = verts;
             mesh.triangles = tris;
+            mesh.uv = uvs;
         }
         else if (vertices.Count == 4)
         {
             Vector3[] verts = vertices.ToArray();
             int[] tris = new int[] { 0, 1, 2, 0, 2, 3 };
+            Vector2[] uvs = new Vector2[]
+            {
+                new Vector2(0, 1),
+                new Vector2(1, 1),
+                new Vector2(1, 0),
+                new Vector2(0, 0)
+            };
 
             mesh.vertices = verts;
             mesh.triangles = tris;
+            mesh.uv = uvs;
         }
         else
         {
             Debug.LogWarning("A polygon requires either 3 or 4 vertices.");
             return;
         }
+
+        // UV 좌표를 오른쪽으로 90도 회전시키기
+        RotateUV(mesh);
 
         mesh.RecalculateNormals();
 
@@ -52,7 +71,27 @@ public class KYH : MonoBehaviour
 
         MeshRenderer mr = gameObject.GetComponent<MeshRenderer>();
         if (mr == null) mr = gameObject.AddComponent<MeshRenderer>();
-        mr.material = polygonMaterial;
+
+        if (polygonTexture != null)
+        {
+            polygonMaterial = new Material(Shader.Find("Standard"));
+            polygonMaterial.mainTexture = polygonTexture;
+        }
+
+        if (polygonMaterial != null)
+        {
+            mr.material = polygonMaterial;
+        }
+    }
+
+    private void RotateUV(Mesh mesh)
+    {
+        Vector2[] uvs = mesh.uv;
+        for (int i = 0; i < uvs.Length; i++)
+        {
+            uvs[i] = new Vector2(1 - uvs[i].y, uvs[i].x);
+        }
+        mesh.uv = uvs;
     }
 
     public void DeletePolygon()

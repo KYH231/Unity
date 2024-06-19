@@ -13,10 +13,10 @@ public class KYH_Editor : Editor
         if (GUILayout.Button("Add Default Vertices"))
         {
             script.vertices.Clear();
-            script.vertices.Add(new Vector3(1, 1, 0));    // 첫 번째 꼭짓점
-            script.vertices.Add(new Vector3(1, -1, 0));   // 두 번째 꼭짓점
-            script.vertices.Add(new Vector3(-1, -1, 0));  // 세 번째 꼭짓점
-            script.vertices.Add(new Vector3(-1, 1, 0));   // 네 번째 꼭짓점
+            script.vertices.Add(new Vector3(-1, -1, 0));    // 첫 번째 꼭짓점
+            script.vertices.Add(new Vector3(-1, 1, 0));   // 두 번째 꼭짓점
+            script.vertices.Add(new Vector3(1, 1, 0));  // 세 번째 꼭짓점
+            script.vertices.Add(new Vector3(1, -1, 0));   // 네 번째 꼭짓점
         }
 
         if (GUILayout.Button("Create Polygon"))
@@ -60,6 +60,16 @@ public class KYH_Editor : Editor
             if (script.GetComponent<MeshRenderer>())
             {
                 script.GetComponent<MeshRenderer>().material = material;
+            }
+        }
+
+        script.polygonTexture = (Texture2D)EditorGUILayout.ObjectField("Polygon Texture", script.polygonTexture, typeof(Texture2D), false);
+
+        if (GUILayout.Button("Set Polygon Texture"))
+        {
+            if (script.polygonTexture != null)
+            {
+                script.CreatePolygon();
             }
         }
     }
